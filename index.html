@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word &amp; Spirit Companion</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+  :root {
+    --bg:          #1a1208;
+    --surface:     #2a1e0e;
+    --surface2:    #352510;
+    --border:      #4a3318;
+    --amber:       #c8860a;
+    --amber-light: #e8a830;
+    --cream:       #f5ead8;
+    --cream-dim:   #c8b898;
+    --muted:       #8a7458;
+    --danger:      #c84040;
+    --success:     #4a8a4a;
+    --radius:      8px;
+    --font-serif:  Georgia, 'Times New Roman', serif;
+    --font-sans:   'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────────────────── */
+  #app {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px 80px;
+  }
+
+  /* ── AUTH SCREEN ────────────────────────────────────────────────────── */
+  #auth-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 0 32px;
+  }
+
+  .auth-logo {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--amber-light);
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+  }
+  .auth-sub {
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 28px;
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 3px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.15s, color 0.15s;
+  }
+  .auth-tab.active {
+    background: var(--amber);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--cream-dim);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus { border-color: var(--amber); }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 4px;
+  }
+  .btn-primary:hover { background: var(--amber-light); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .auth-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  /* ── MAIN SCREEN ────────────────────────────────────────────────────── */
+  #main-screen { display: none; padding-top: 24px; }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .header-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--amber-light);
+  }
+  .btn-signout {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .btn-signout:hover { color: var(--cream); border-color: var(--cream-dim); }
+
+  /* Movement badge */
+  .movement-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+  }
+  .movement-label {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.72rem;
+    margin-bottom: 3px;
+  }
+  .movement-title { color: var(--amber-light); font-family: var(--font-serif); }
+
+  /* Week picker */
+  .section-heading {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 420px) {
+    .week-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  .week-btn {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    position: relative;
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    gap: 2px;
+  }
+  .week-btn:hover { background: var(--surface2); }
+  .week-btn.active { border-color: var(--amber); color: var(--amber-light); }
+  .week-btn .week-num { font-weight: 600; font-size: 0.95rem; }
+  .week-btn .week-dots { display: flex; gap: 2px; }
+  .week-btn .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .week-btn .dot.word-done { background: var(--amber); }
+  .week-btn .dot.spirit-done { background: #7ab0e8; }
+
+  /* Mode cards */
+  .mode-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 380px) {
+    .mode-cards { grid-template-columns: 1fr; }
+  }
+
+  .mode-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .mode-card:hover { border-color: var(--amber); background: var(--surface2); }
+  .mode-card.selected { border-color: var(--amber); background: var(--surface2); }
+  .mode-icon { font-size: 1.4rem; margin-bottom: 8px; }
+  .mode-name {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .mode-desc {
+    color: var(--cream-dim);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+  .mode-done-badge {
+    display: inline-block;
+    background: var(--success);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Translation selector */
+  .translation-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .translation-row label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .translation-row select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+  }
+  .translation-row select:focus { border-color: var(--amber); }
+
+  .btn-begin {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    letter-spacing: 0.02em;
+    transition: background 0.15s;
+    margin-bottom: 28px;
+  }
+  .btn-begin:hover { background: var(--amber-light); }
+  .btn-begin:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── CONVERSATION SCREEN ────────────────────────────────────────────── */
+  #convo-screen { display: none; padding-top: 16px; }
+
+  .convo-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .btn-back {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .btn-back:hover { border-color: var(--cream-dim); color: var(--cream); }
+
+  .convo-title-block {}
+  .convo-week-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .convo-title {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 1.1rem;
+  }
+
+  /* Messages */
+  #messages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 90%;
+  }
+  .msg.assistant { align-self: flex-start; }
+  .msg.user      { align-self: flex-end; }
+
+  .msg-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    padding: 0 4px;
+  }
+  .msg.user .msg-label { text-align: right; }
+
+  .msg-bubble {
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+  .msg.assistant .msg-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: var(--font-serif);
+    border-radius: 2px var(--radius) var(--radius) var(--radius);
+  }
+  .msg.user .msg-bubble {
+    background: var(--amber);
+    color: var(--bg);
+    font-weight: 500;
+    border-radius: var(--radius) 2px var(--radius) var(--radius);
+  }
+
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px var(--radius) var(--radius) var(--radius);
+    width: fit-content;
+  }
+  .typing-indicator span {
+    width: 7px; height: 7px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: typing 1.2s infinite;
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Input area */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    padding: 16px 0 8px;
+    border-top: 1px solid var(--border);
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+  }
+  #user-input {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    min-height: 48px;
+    max-height: 140px;
+    font-family: var(--font-sans);
+    transition: border-color 0.12s;
+  }
+  #user-input:focus { border-color: var(--amber); }
+  #user-input::placeholder { color: var(--muted); }
+
+  .btn-send {
+    align-self: flex-end;
+    padding: 12px 18px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s;
+    white-space: nowrap;
+  }
+  .btn-send:hover { background: var(--amber-light); }
+  .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Session complete banner */
+  .session-complete {
+    background: var(--surface2);
+    border: 1px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    margin-top: 16px;
+  }
+  .session-complete h3 {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    margin-bottom: 8px;
+  }
+  .session-complete p {
+    color: var(--cream-dim);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .btn-done {
+    padding: 10px 24px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-done:hover { background: var(--amber-light); }
+
+  /* Misc */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+  .passage-ref {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--amber-light);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── AUTH SCREEN ──────────────────────────────────────────────────── -->
+  <div id="auth-screen">
+    <div class="auth-logo">Word &amp; Spirit Companion</div>
+    <div class="auth-sub">The Daniel Principle — Interactive Study Workbook</div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+
+      <div id="signin-form">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="signin-email" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signin-password" placeholder="Password" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" onclick="handleSignIn()">Sign In</button>
+      </div>
+
+      <div id="signup-form" class="hidden">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signup-password" placeholder="Choose a password" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="signup-confirm" placeholder="Confirm password" autocomplete="new-password">
+        </div>
+        <button class="btn-primary" onclick="handleSignUp()">Create Account</button>
+      </div>
+
+      <div id="auth-error" class="auth-error"></div>
+    </div>
+  </div>
+
+  <!-- ── MAIN SCREEN ───────────────────────────────────────────────────── -->
+  <div id="main-screen">
+    <div class="header">
+      <div class="header-title">Word &amp; Spirit</div>
+      <button class="btn-signout" onclick="handleSignOut()">Sign out</button>
+    </div>
+
+    <div class="movement-badge">
+      <div class="movement-label">Formation Movement</div>
+      <div class="movement-title" id="movement-label">—</div>
+    </div>
+
+    <div class="section-heading">Choose a Week</div>
+    <div class="week-grid" id="week-grid"></div>
+
+    <div class="section-heading">This Session</div>
+    <div class="mode-cards">
+      <div class="mode-card" id="mode-word" onclick="selectMode('word')">
+        <div class="mode-icon">📖</div>
+        <div class="mode-name">Word Within</div>
+        <div class="mode-desc">Guided Scripture meditation — 15–20 minutes</div>
+        <div id="word-done-badge" class="mode-done-badge hidden">Completed</div>
+      </div>
+      <div class="mode-card" id="mode-spirit" onclick="selectMode('spirit')">
+        <div class="mode-icon">🕊</div>
+        <div class="mode-name">Spirit Within</div>
+        <div class="mode-desc">Weekly check-in — 5–7 minutes</div>
+        <div id="spirit-done-badge" class="mode-done-badge hidden">Completed</div>
+      </div>
+    </div>
+
+    <div id="translation-section" class="hidden">
+      <div class="translation-row">
+        <label>Translation</label>
+        <select id="translation-select">
+          <option value="nkjv" selected>NKJV (default)</option>
+          <option value="esv">ESV</option>
+          <option value="niv">NIV</option>
+          <option value="nasb">NASB</option>
+          <option value="csb">CSB</option>
+          <option value="kjv">KJV</option>
+          <option value="nlt">NLT</option>
+          <option value="amp">AMP</option>
+          <option value="msg">The Message</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-begin" id="btn-begin" onclick="startSession()" disabled>
+      Begin Session
+    </button>
+  </div>
+
+  <!-- ── CONVERSATION SCREEN ───────────────────────────────────────────── -->
+  <div id="convo-screen">
+    <div class="convo-header">
+      <button class="btn-back" onclick="backToMain()">← Back</button>
+      <div class="convo-title-block">
+        <div class="convo-week-label" id="convo-week-label">Week 1</div>
+        <div class="convo-title" id="convo-title">Word Within</div>
+      </div>
+    </div>
+
+    <div id="passage-ref" class="passage-ref hidden"></div>
+    <div id="messages"></div>
+    <div id="session-complete-banner" class="hidden"></div>
+
+    <div class="input-row" id="input-row">
+      <textarea
+        id="user-input"
+        placeholder="Write your response…"
+        rows="1"
+        onkeydown="handleKeyDown(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="btn-send" id="btn-send" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://voyktzdqcjufcgfyabmb.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_9icwsb3kNFq3_qRBAtVQGg_1Nljhjp-';
+const API_BASE      = '';   // relative — same Vercel deployment
+
+// ── DATA ────────────────────────────────────────────────────────────────────
+const MOVEMENTS = {
+  1: { weeks: [1,2,3,4],      title: 'Learning to Trust God' },
+  2: { weeks: [5,6,7,8,9],   title: 'Trust Under Examination' },
+  3: { weeks: [10,11,12,13], title: 'Developing Settled Conviction' }
+};
+const WEEK_META = {
+  1:  { theme: 'Foundational Trust',          passage: 'Psalm 62:5–6' },
+  2:  { theme: 'Pride and Self-Reliance',     passage: 'Proverbs 3:5–6' },
+  3:  { theme: 'Fear of the Unknown',         passage: 'Isaiah 41:10' },
+  4:  { theme: 'Doubt and Wavering Faith',    passage: 'Mark 9:23–24' },
+  5:  { theme: 'Waiting and Unanswered Prayer', passage: 'Lamentations 3:25–26' },
+  6:  { theme: 'Failure and Shame',           passage: '1 John 1:9' },
+  7:  { theme: 'Sustained Hardship',          passage: 'Romans 5:3–5' },
+  8:  { theme: 'Relational Conflict',         passage: 'Matthew 5:44–45' },
+  9:  { theme: 'Temptation',                  passage: '1 Corinthians 10:13' },
+  10: { theme: 'Weakness and Dependence',     passage: '2 Corinthians 12:9' },
+  11: { theme: 'Weariness in Obedience',      passage: 'Galatians 6:9' },
+  12: { theme: 'Security in God\'s Love',     passage: 'Romans 8:38–39' },
+  13: { theme: 'Mature, Tested Conviction',   passage: 'Hebrews 10:35–36' }
+};
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+let currentUser   = null;
+let accessToken   = null;
+let progress      = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
+let selectedWeek  = 1;
+let selectedMode  = null;   // 'word' | 'spirit'
+let messages      = [];
+let isLoading     = false;
+let exchangeCount = 0;
+const MAX_EXCHANGES = { word: 16, spirit: 7 };
+
+// ── AUTH HELPERS ────────────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.getElementById('signin-form').classList.toggle('hidden', tab !== 'signin');
+  document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
+  document.querySelectorAll('.auth-tab').forEach((el, i) =>
+    el.classList.toggle('active', (i === 0 && tab === 'signin') || (i === 1 && tab === 'signup'))
+  );
+  document.getElementById('auth-error').textContent = '';
+}
+
+function setAuthError(msg) {
+  document.getElementById('auth-error').textContent = msg;
+}
+
+async function handleSignIn() {
+  const email = document.getElementById('signin-email').value.trim();
+  const pass  = document.getElementById('signin-password').value;
+  if (!email || !pass) return setAuthError('Please enter email and password.');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) return setAuthError(error.message);
+  await onSignedIn(data.session);
+}
+
+async function handleSignUp() {
+  const email   = document.getElementById('signup-email').value.trim();
+  const pass    = document.getElementById('signup-password').value;
+  const confirm = document.getElementById('signup-confirm').value;
+  if (!email || !pass) return setAuthError('Please enter email and password.');
+  if (pass !== confirm) return setAuthError('Passwords do not match.');
+  if (pass.length < 8) return setAuthError('Password must be at least 8 characters.');
+  const { data, error } = await sb.auth.signUp({ email, password: pass });
+  if (error) return setAuthError(error.message);
+  if (data.session) {
+    await onSignedIn(data.session);
+  } else {
+    setAuthError('Check your email for a confirmation link, then sign in.');
+  }
+}
+
+async function handleSignOut() {
+  await sb.auth.signOut();
+  currentUser = null; accessToken = null;
+  messages = []; selectedMode = null;
+  showScreen('auth');
+}
+
+async function onSignedIn(session) {
+  currentUser = session.user;
+  accessToken = session.access_token;
+  await loadProgress();
+  renderMain();
+  showScreen('main');
+}
+
+// ── PROGRESS ────────────────────────────────────────────────────────────────
+async function loadProgress() {
+  try {
+    const r = await authFetch('/api/progress', { method: 'GET' });
+    progress = r;
+  } catch (e) {
+    progress = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
+  }
+}
+
+async function markComplete(week, mode) {
+  try {
+    const r = await authFetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'complete_session', week, mode })
+    });
+    progress = r;
+    renderMain();
+  } catch (e) { /* silent */ }
+}
+
+async function authFetch(url, opts = {}) {
+  const res = await fetch(url, {
+    ...opts,
+    headers: { ...(opts.headers || {}), 'Authorization': `Bearer ${accessToken}` }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── RENDER MAIN ──────────────────────────────────────────────────────────────
+function renderMain() {
+  selectedWeek = progress.current_week || 1;
+  renderMovement();
+  renderWeekGrid();
+  renderModeCards();
+  updateBeginButton();
+}
+
+function movementForWeek(w) {
+  for (const [m, def] of Object.entries(MOVEMENTS)) {
+    if (def.weeks.includes(w)) return def;
+  }
+  return MOVEMENTS[1];
+}
+
+function renderMovement() {
+  document.getElementById('movement-label').textContent =
+    movementForWeek(selectedWeek).title;
+}
+
+function renderWeekGrid() {
+  const grid = document.getElementById('week-grid');
+  grid.innerHTML = '';
+  for (let w = 1; w <= 13; w++) {
+    const btn = document.createElement('button');
+    btn.className = 'week-btn' + (w === selectedWeek ? ' active' : '');
+    const wordDone   = progress.word_weeks_completed.includes(w);
+    const spiritDone = progress.spirit_weeks_completed.includes(w);
+    btn.innerHTML = `
+      <span class="week-num">${w}</span>
+      <div class="week-dots">
+        <div class="dot ${wordDone ? 'word-done' : ''}"></div>
+        <div class="dot ${spiritDone ? 'spirit-done' : ''}"></div>
+      </div>`;
+    btn.onclick = () => {
+      selectedWeek = w;
+      selectedMode = null;
+      renderWeekGrid();
+      renderMovement();
+      renderModeCards();
+      updateBeginButton();
+    };
+    grid.appendChild(btn);
+  }
+}
+
+function renderModeCards() {
+  const wordDone   = progress.word_weeks_completed.includes(selectedWeek);
+  const spiritDone = progress.spirit_weeks_completed.includes(selectedWeek);
+
+  document.getElementById('word-done-badge').classList.toggle('hidden', !wordDone);
+  document.getElementById('spirit-done-badge').classList.toggle('hidden', !spiritDone);
+
+  document.getElementById('mode-word').classList.toggle('selected', selectedMode === 'word');
+  document.getElementById('mode-spirit').classList.toggle('selected', selectedMode === 'spirit');
+
+  // Show translation only for Word Within
+  document.getElementById('translation-section').classList.toggle('hidden', selectedMode !== 'word');
+}
+
+function selectMode(mode) {
+  selectedMode = mode;
+  renderModeCards();
+  updateBeginButton();
+}
+
+function updateBeginButton() {
+  const btn = document.getElementById('btn-begin');
+  btn.disabled = !selectedMode;
+  if (selectedMode) {
+    const label = selectedMode === 'word' ? 'Begin Word Within — Week ' + selectedWeek
+                                           : 'Begin Spirit Within — Week ' + selectedWeek;
+    btn.textContent = label;
+  } else {
+    btn.textContent = 'Begin Session';
+  }
+}
+
+// ── SESSION START ────────────────────────────────────────────────────────────
+async function startSession() {
+  if (!selectedMode) return;
+  messages = [];
+  exchangeCount = 0;
+
+  // Update convo header
+  const meta = WEEK_META[selectedWeek];
+  document.getElementById('convo-week-label').textContent = `Week ${selectedWeek} · ${meta.theme}`;
+  document.getElementById('convo-title').textContent =
+    selectedMode === 'word' ? 'Word Within' : 'Spirit Within';
+
+  // Passage reference for Word Within
+  const passageRef = document.getElementById('passage-ref');
+  if (selectedMode === 'word') {
+    passageRef.textContent = meta.passage;
+    passageRef.classList.remove('hidden');
+  } else {
+    passageRef.classList.add('hidden');
+  }
+
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('session-complete-banner').classList.add('hidden');
+  document.getElementById('session-complete-banner').innerHTML = '';
+  document.getElementById('input-row').classList.remove('hidden');
+
+  showScreen('convo');
+
+  // Get opening message from AI
+  setLoading(true);
+  await sendToAPI('', true);
+  setLoading(false);
+}
+
+// ── MESSAGING ────────────────────────────────────────────────────────────────
+function handleKeyDown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  appendMessage('user', text);
+  messages.push({ role: 'user', content: text });
+
+  setLoading(true);
+  await sendToAPI(text, false);
+  setLoading(false);
+}
+
+async function sendToAPI(userText, isOpening) {
+  // For opening, send empty user message to get AI to start
+  const payload = isOpening
+    ? [{ role: 'user', content: 'Begin the session.' }]
+    : messages;
+
+  const endpoint = selectedMode === 'word' ? '/api/chat' : '/api/spirit';
+
+  try {
+    showTyping(true);
+    const data = await authFetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: payload,
+        week: selectedWeek,
+        translation: selectedMode === 'word'
+          ? document.getElementById('translation-select').value
+          : undefined
+      })
+    });
+
+    showTyping(false);
+    const reply = data.reply;
+    appendMessage('assistant', reply);
+    messages.push({ role: 'assistant', content: reply });
+    exchangeCount++;
+
+    // Check if session is nearing its natural end
+    const maxEx = MAX_EXCHANGES[selectedMode];
+    if (exchangeCount >= maxEx - 1) {
+      showSessionComplete();
+    }
+  } catch (e) {
+    showTyping(false);
+    appendMessage('assistant', 'Something went wrong. Please try again.');
+  }
+}
+
+function appendMessage(role, text) {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = role === 'assistant'
+    ? (selectedMode === 'word' ? 'Word Within' : 'Spirit Within')
+    : 'You';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+
+  div.appendChild(label);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function showTyping(show) {
+  const existing = document.getElementById('typing-bubble');
+  if (show && !existing) {
+    const container = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg assistant';
+    div.id = 'typing-bubble';
+    div.innerHTML = `
+      <div class="msg-label">${selectedMode === 'word' ? 'Word Within' : 'Spirit Within'}</div>
+      <div class="typing-indicator"><span></span><span></span><span></span></div>`;
+    container.appendChild(div);
+    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  } else if (!show && existing) {
+    existing.remove();
+  }
+}
+
+function setLoading(val) {
+  isLoading = val;
+  document.getElementById('btn-send').disabled = val;
+  document.getElementById('user-input').disabled = val;
+}
+
+function showSessionComplete() {
+  const banner = document.getElementById('session-complete-banner');
+  const modeLabel = selectedMode === 'word' ? 'Word Within' : 'Spirit Within';
+  banner.innerHTML = `
+    <div class="session-complete">
+      <h3>Session Complete</h3>
+      <p>You have finished your ${modeLabel} session for Week ${selectedWeek}.<br>
+         Come back to this passage each day this week.</p>
+      <button class="btn-done" onclick="finishSession()">Mark as Complete</button>
+    </div>`;
+  banner.classList.remove('hidden');
+  document.getElementById('input-row').classList.add('hidden');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+async function finishSession() {
+  await markComplete(selectedWeek, selectedMode);
+  backToMain();
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.getElementById('auth-screen').style.display = name === 'auth'  ? 'flex' : 'none';
+  document.getElementById('main-screen').style.display = name === 'main'  ? 'block' : 'none';
+  document.getElementById('convo-screen').style.display = name === 'convo' ? 'block' : 'none';
+}
+
+function backToMain() {
+  showScreen('main');
+  selectedMode = null;
+  renderModeCards();
+  updateBeginButton();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+(async () => {
+  showScreen('auth');
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    await onSignedIn(session);
+  }
+
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      await onSignedIn(session);
+    } else if (event === 'SIGNED_OUT') {
+      showScreen('auth');
+    } else if (event === 'TOKEN_REFRESHED' && session) {
+      accessToken = session.access_token;
+    }
+  });
+})();
+</script>
+</body>
+</html>
