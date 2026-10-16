@@ -787,7 +787,10 @@ async function authFetch(url, opts = {}) {
     ...opts,
     headers: { ...(opts.headers || {}), 'Authorization': `Bearer ${accessToken}` }
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`HTTP ${res.status}: ${body || '(empty)'}`);
+  }
   return res.json();
 }
 
