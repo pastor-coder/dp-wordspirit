@@ -1,27 +1,36 @@
 // Spirit Within Companion — check-in API
-// Vercel serverless function
+// Vercel serverless function — zero npm dependencies (native fetch only)
 // Requires: ANTHROPIC_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
 
-const { createClient } = require('@supabase/supabase-js');
+// ─── AUTH HELPER ─────────────────────────────────────────────────────────────
+
+async function verifyToken(token) {
+  const res = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'apikey': process.env.SUPABASE_SERVICE_KEY
+    }
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
 
 // ─── WEEKLY CONTEXT ──────────────────────────────────────────────────────────
-// Provides the Spirit Within companion with the week's passage context
-// so reflections can stay grounded in the same formation arc.
 
 const WEEK_CONTEXT = {
-  1:  { theme: 'Foundational Trust',         passage: 'Psalm 62:5–6' },
-  2:  { theme: 'Pride and Self-Reliance',    passage: 'Proverbs 3:5–6' },
-  3:  { theme: 'Fear of the Unknown',        passage: 'Isaiah 41:10' },
-  4:  { theme: 'Doubt and Wavering Faith',   passage: 'Mark 9:23–24' },
+  1:  { theme: 'Foundational Trust',            passage: 'Psalm 62:5–6' },
+  2:  { theme: 'Pride and Self-Reliance',       passage: 'Proverbs 3:5–6' },
+  3:  { theme: 'Fear of the Unknown',           passage: 'Isaiah 41:10' },
+  4:  { theme: 'Doubt and Wavering Faith',      passage: 'Mark 9:23–24' },
   5:  { theme: 'Waiting and Unanswered Prayer', passage: 'Lamentations 3:25–26' },
-  6:  { theme: 'Failure and Shame',          passage: '1 John 1:9' },
-  7:  { theme: 'Sustained Hardship',         passage: 'Romans 5:3–5' },
-  8:  { theme: 'Relational Conflict',        passage: 'Matthew 5:44–45' },
-  9:  { theme: 'Temptation',                 passage: '1 Corinthians 10:13' },
-  10: { theme: 'Weakness and Dependence',    passage: '2 Corinthians 12:9' },
-  11: { theme: 'Weariness in Obedience',     passage: 'Galatians 6:9' },
-  12: { theme: 'Security in God\'s Love',    passage: 'Romans 8:38–39' },
-  13: { theme: 'Mature, Tested Conviction',  passage: 'Hebrews 10:35–36' }
+  6:  { theme: 'Failure and Shame',             passage: '1 John 1:9' },
+  7:  { theme: 'Sustained Hardship',            passage: 'Romans 5:3–5' },
+  8:  { theme: 'Relational Conflict',           passage: 'Matthew 5:44–45' },
+  9:  { theme: 'Temptation',                    passage: '1 Corinthians 10:13' },
+  10: { theme: 'Weakness and Dependence',       passage: '2 Corinthians 12:9' },
+  11: { theme: 'Weariness in Obedience',        passage: 'Galatians 6:9' },
+  12: { theme: "Security in God's Love",        passage: 'Romans 8:38–39' },
+  13: { theme: 'Mature, Tested Conviction',     passage: 'Hebrews 10:35–36' }
 };
 
 // ─── SYSTEM PROMPT ───────────────────────────────────────────────────────────
@@ -134,13 +143,8 @@ module.exports = async function handler(req, res) {
   const token = (req.headers.authorization || '').replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Unauthorised' });
 
-  const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  );
-  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-  if (authErr || !user) return res.status(401).json({ error: 'Invalid session' });
+  const user = await verifyToken(token);
+  if (!user || !user.id) return res.status(401).json({ error: 'Invalid session' });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
@@ -166,8 +170,18 @@ module.exports = async function handler(req, res) {
     });
 
     const data = await response.json();
-    if (data.error) return res.status(500).json({ error: data.error.message });
-    return res.status(200).json({ reply: data.content[0].text });
+    if (!response.ok || data.error) {
+      const errMsg = data.error ? (data.error.message || JSON.stringify(data.error)) : `HTTP ${response.status}`;
+      return res.status(500).json({ error: errMsg });
+    }
+    if (!data.content || !data.content.length) {
+      return res.status(500).json({ error: 'Empty response from AI' });
+    }
+    const textBlock = data.content.find(b => b.type === 'text');
+    if (!textBlock || !textBlock.text) {
+      return res.status(500).json({ error: 'No text in AI response' });
+    }
+    return res.status(200).json({ reply: textBlock.text });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
