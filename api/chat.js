@@ -269,6 +269,11 @@ THE CLOSING
 
 Give a brief reflection — 3 to 5 sentences. Name what the passage says about God, what the reader brought into it from their week, and one specific thing that surfaced in Stage 3 worth returning to. Then say: "Come back to this passage each day this week. You do not have to work through these questions again. Just read it. Let it speak to you from wherever you are that day."
 
+ENDING THE SESSION — CRITICAL INSTRUCTION
+When you have delivered the closing reflection and the invitation to return daily, append the exact token [SESSION_COMPLETE] at the very end of your message — after everything else, on its own, no punctuation after it. This signals the system to close the session. Do not use this token at any other point in the conversation. Only once, only at the true end.
+
+If the reader responds after your closing (saying thank you, amen, or anything else), reply with one warm sentence — no new questions — and end that reply with [SESSION_COMPLETE] again so the session closes.
+
 HOW YOU TALK
 
 Short sentences. Simple words. Grade 6 level. Warm and unhurried.
@@ -375,7 +380,11 @@ module.exports = async function handler(req, res) {
     if (!textBlock || !textBlock.text) {
       return res.status(500).json({ error: 'No text in AI response' });
     }
-    return res.status(200).json({ reply: textBlock.text });
+    // Detect session-complete signal from AI, strip marker before sending
+    const raw = textBlock.text;
+    const done = raw.includes('[SESSION_COMPLETE]');
+    const reply = raw.replace('[SESSION_COMPLETE]', '').trim();
+    return res.status(200).json({ reply, done });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
