@@ -967,7 +967,7 @@ async function sendToAPI(userText, isOpening) {
     }
   } catch (e) {
     showTyping(false);
-    appendMessage('assistant', 'Something went wrong. Please try again.');
+    appendMessage('assistant', 'Error: ' + (e.message || e.toString()));
   }
 }
 
