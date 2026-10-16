@@ -936,12 +936,12 @@ async function sendMessage() {
 }
 
 async function sendToAPI(userText, isOpening) {
-  // For opening, send empty user message to get AI to start
-  const payload = isOpening
-    ? [{ role: 'user', content: 'Begin the session.' }]
-    : messages;
-
   const endpoint = selectedMode === 'word' ? '/api/chat' : '/api/spirit';
+
+  // For opening: seed the messages array with the trigger message
+  if (isOpening) {
+    messages.push({ role: 'user', content: 'Begin the session.' });
+  }
 
   try {
     showTyping(true);
@@ -949,7 +949,7 @@ async function sendToAPI(userText, isOpening) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        messages: payload,
+        messages: messages,
         week: selectedWeek,
         translation: selectedMode === 'word'
           ? document.getElementById('translation-select').value
@@ -958,9 +958,11 @@ async function sendToAPI(userText, isOpening) {
     });
 
     showTyping(false);
-    const reply = data.reply;
-    appendMessage('assistant', reply);
-    messages.push({ role: 'assistant', content: reply });
+    const reply = data.reply || '';
+    if (reply) {
+      appendMessage('assistant', reply);
+      messages.push({ role: 'assistant', content: reply });
+    }
     exchangeCount++;
 
     // Check if session is nearing its natural end
