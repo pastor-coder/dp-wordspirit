@@ -339,7 +339,7 @@ module.exports = async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 500,
         system: systemPrompt,
         messages: messages
@@ -347,7 +347,13 @@ module.exports = async function handler(req, res) {
     });
 
     const data = await response.json();
-    if (data.error) return res.status(500).json({ error: data.error.message });
+    if (!response.ok || data.error) {
+      const errMsg = data.error ? data.error.message : `HTTP ${response.status}`;
+      return res.status(500).json({ error: errMsg });
+    }
+    if (!data.content || !data.content[0]) {
+      return res.status(500).json({ error: 'Empty response from AI' });
+    }
     return res.status(200).json({ reply: data.content[0].text });
   } catch (err) {
     return res.status(500).json({ error: err.message });
