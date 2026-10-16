@@ -704,7 +704,7 @@ let selectedMode  = null;   // 'word' | 'spirit'
 let messages      = [];
 let isLoading     = false;
 let exchangeCount = 0;
-const MAX_EXCHANGES = { word: 16, spirit: 7 };
+const MAX_EXCHANGES = { word: 20, spirit: 10 };
 
 // ── AUTH HELPERS ────────────────────────────────────────────────────────────
 function switchAuthTab(tab) {
@@ -967,7 +967,7 @@ async function sendToAPI(userText, isOpening) {
 
     // Check if session is nearing its natural end
     const maxEx = MAX_EXCHANGES[selectedMode];
-    if (exchangeCount >= maxEx - 1) {
+    if (exchangeCount >= maxEx) {
       showSessionComplete();
     }
   } catch (e) {
