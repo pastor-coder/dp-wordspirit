@@ -1,12 +1,6 @@
 {
   "name": "dp-word-spirit",
   "version": "1.0.0",
-  "description": "Word & Spirit Companion — The Daniel Principle Interactive Study Workbook",
-  "private": true,
-  "engines": {
-    "node": ">=18.x"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.45.4"
-  }
+  "description": "Word & Spirit Companion — The Daniel Principle",
+  "dependencies": {}
 }
