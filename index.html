@@ -965,9 +965,9 @@ async function sendToAPI(userText, isOpening) {
     }
     exchangeCount++;
 
-    // Check if session is nearing its natural end
+    // End session if AI signals done, or if hard exchange limit reached
     const maxEx = MAX_EXCHANGES[selectedMode];
-    if (exchangeCount >= maxEx) {
+    if (data.done || exchangeCount >= maxEx) {
       showSessionComplete();
     }
   } catch (e) {
