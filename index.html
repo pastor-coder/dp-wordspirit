@@ -18,6 +18,7 @@
     --muted:       #8a7458;
     --danger:      #c84040;
     --success:     #4a8a4a;
+    --blue:        #4a80b8;
     --radius:      8px;
     --font-serif:  Georgia, 'Times New Roman', serif;
     --font-sans:   'Segoe UI', system-ui, sans-serif;
@@ -145,7 +146,6 @@
   /* ── MAIN SCREEN ────────────────────────────────────────────────────── */
   #main-screen { display: none; padding-top: 24px; }
 
-  /* Header */
   .header {
     display: flex;
     align-items: center;
@@ -171,7 +171,6 @@
   }
   .btn-signout:hover { color: var(--cream); border-color: var(--cream-dim); }
 
-  /* Movement badge */
   .movement-badge {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -189,7 +188,6 @@
   }
   .movement-title { color: var(--amber-light); font-family: var(--font-serif); }
 
-  /* Week picker */
   .section-heading {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -236,51 +234,145 @@
   .week-btn .dot.word-done { background: var(--amber); }
   .week-btn .dot.spirit-done { background: #7ab0e8; }
 
-  /* Mode cards */
-  .mode-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-  @media (max-width: 380px) {
-    .mode-cards { grid-template-columns: 1fr; }
+  /* ── JOURNEY SECTION (replaces mode-cards) ──────────────────────────── */
+  .journey-section {
+    margin-bottom: 20px;
   }
 
-  .mode-card {
+  /* Day pip track */
+  .day-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+  .day-pip-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+  }
+  .day-pip-wrap:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: calc(50% + 11px);
+    width: calc(100% - 22px);
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .day-pip-wrap.done::after { background: var(--amber); }
+  .day-pip {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .day-pip.done {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--bg);
+  }
+  .day-pip.current {
+    border-color: var(--amber-light);
+    color: var(--amber-light);
+    box-shadow: 0 0 0 3px rgba(200,134,10,0.25);
+  }
+  .day-pip-label {
+    font-size: 0.58rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 36px;
+  }
+  .day-pip-label.current { color: var(--amber-light); }
+
+  /* Revelation card */
+  .revelation-card {
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-left: 4px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .revelation-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+  .revelation-text {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--cream);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* Clickable action cards */
+  .action-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px;
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
-    text-align: left;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
   }
-  .mode-card:hover { border-color: var(--amber); background: var(--surface2); }
-  .mode-card.selected { border-color: var(--amber); background: var(--surface2); }
-  .mode-icon { font-size: 1.4rem; margin-bottom: 8px; }
-  .mode-name {
+  .action-card:hover { border-color: var(--amber); background: var(--surface2); }
+  .action-card-icon { font-size: 1.5rem; margin-top: 2px; flex-shrink: 0; }
+  .action-card-body { flex: 1; }
+  .action-card-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .action-card-name {
     font-family: var(--font-serif);
     color: var(--amber-light);
     font-size: 1rem;
     margin-bottom: 4px;
   }
-  .mode-desc {
+  .action-card-desc {
     color: var(--cream-dim);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     line-height: 1.5;
   }
-  .mode-done-badge {
+  .action-card-done {
     display: inline-block;
     background: var(--success);
     color: #fff;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     padding: 2px 7px;
     border-radius: 10px;
-    margin-top: 8px;
+    margin-top: 6px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
+  .action-card.week-complete {
+    border-color: var(--success);
+    cursor: default;
+  }
+  .action-card.week-complete:hover { background: var(--surface); }
 
   /* Translation selector */
   .translation-row {
@@ -308,24 +400,12 @@
   }
   .translation-row select:focus { border-color: var(--amber); }
 
-  .btn-begin {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background: var(--amber);
-    color: var(--bg);
+  /* Spirit Within separate card */
+  .spirit-divider {
     border: none;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: var(--font-serif);
-    letter-spacing: 0.02em;
-    transition: background 0.15s;
-    margin-bottom: 28px;
+    border-top: 1px solid var(--border);
+    margin: 20px 0 16px;
   }
-  .btn-begin:hover { background: var(--amber-light); }
-  .btn-begin:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* ── CONVERSATION SCREEN ────────────────────────────────────────────── */
   #convo-screen { display: none; padding-top: 16px; }
@@ -365,7 +445,6 @@
     font-size: 1.1rem;
   }
 
-  /* Messages */
   #messages {
     display: flex;
     flex-direction: column;
@@ -434,7 +513,6 @@
     30% { transform: translateY(-6px); opacity: 1; }
   }
 
-  /* Input area */
   .input-row {
     display: flex;
     gap: 10px;
@@ -479,7 +557,6 @@
   .btn-send:hover { background: var(--amber-light); }
   .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* Session complete banner */
   .session-complete {
     background: var(--surface2);
     border: 1px solid var(--amber);
@@ -511,6 +588,218 @@
     transition: background 0.12s;
   }
   .btn-done:hover { background: var(--amber-light); }
+
+  /* ── DAILY EXERCISE SCREEN ──────────────────────────────────────────── */
+  #daily-screen { display: none; padding-top: 16px; }
+
+  .daily-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .daily-revelation {
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    border-left: 4px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 22px;
+  }
+  .daily-revelation-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+  .daily-revelation-text {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--cream);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .daily-day-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .daily-exercise-name {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .daily-question {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--cream);
+  }
+
+  /* Slider */
+  .slider-wrap {
+    margin-bottom: 24px;
+  }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .slider-label {
+    font-size: 0.78rem;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .slider-val {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--amber-light);
+    font-weight: 700;
+    min-width: 28px;
+    text-align: right;
+  }
+  .slider-track {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .slider-endpoint { font-size: 0.75rem; color: var(--muted); width: 12px; }
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--amber);
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(200,134,10,0.2);
+    transition: box-shadow 0.12s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 5px rgba(200,134,10,0.3);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--amber);
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Reflection textarea */
+  .reflection-wrap { margin-bottom: 24px; }
+  .reflection-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .reflection-optional {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+  textarea.daily-reflection {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    min-height: 90px;
+    font-family: var(--font-sans);
+    transition: border-color 0.12s;
+  }
+  textarea.daily-reflection:focus { border-color: var(--amber); }
+  textarea.daily-reflection::placeholder { color: var(--muted); }
+
+  .btn-submit {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--amber);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    letter-spacing: 0.02em;
+    transition: background 0.15s;
+    margin-bottom: 28px;
+  }
+  .btn-submit:hover { background: var(--amber-light); }
+  .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Week review day scores */
+  .week-review { margin-bottom: 22px; }
+  .week-review-title {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .score-row-name {
+    flex: 1;
+    font-size: 0.82rem;
+    color: var(--cream-dim);
+  }
+  .score-row-val {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--amber-light);
+    min-width: 28px;
+    text-align: right;
+  }
+  .score-row-missing {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+  }
 
   /* Misc */
   .spinner {
@@ -600,42 +889,22 @@
     <div class="section-heading">Choose a Week</div>
     <div class="week-grid" id="week-grid"></div>
 
-    <div class="section-heading">This Session</div>
-    <div class="mode-cards">
-      <div class="mode-card" id="mode-word" onclick="selectMode('word')">
-        <div class="mode-icon">📖</div>
-        <div class="mode-name">Word Within</div>
-        <div class="mode-desc">Guided Scripture meditation — 15–20 minutes</div>
-        <div id="word-done-badge" class="mode-done-badge hidden">Completed</div>
-      </div>
-      <div class="mode-card" id="mode-spirit" onclick="selectMode('spirit')">
-        <div class="mode-icon">🕊</div>
-        <div class="mode-name">Spirit Within</div>
-        <div class="mode-desc">Weekly check-in — 5–7 minutes</div>
-        <div id="spirit-done-badge" class="mode-done-badge hidden">Completed</div>
+    <!-- Context-aware journey section (Day 1 not done → Word Within CTA; Day 1 done → pip tracker + daily card) -->
+    <div class="section-heading" id="journey-heading">This Week's Journey</div>
+    <div class="journey-section" id="journey-section"></div>
+
+    <!-- Spirit Within — always-accessible separate track -->
+    <hr class="spirit-divider">
+    <div class="section-heading">Spirit Within — Separate Track</div>
+    <div class="action-card" onclick="startSpiritSession()">
+      <div class="action-card-icon">🕊</div>
+      <div class="action-card-body">
+        <div class="action-card-label">Week <span id="spirit-week-label">1</span> · Weekly Check-In</div>
+        <div class="action-card-name">Spirit Within</div>
+        <div class="action-card-desc">Weekly sensitivity check — 5–7 minutes</div>
+        <div id="spirit-done-badge" class="action-card-done hidden">Completed this week</div>
       </div>
     </div>
-
-    <div id="translation-section" class="hidden">
-      <div class="translation-row">
-        <label>Translation</label>
-        <select id="translation-select">
-          <option value="nkjv" selected>NKJV (default)</option>
-          <option value="esv">ESV</option>
-          <option value="niv">NIV</option>
-          <option value="nasb">NASB</option>
-          <option value="csb">CSB</option>
-          <option value="kjv">KJV</option>
-          <option value="nlt">NLT</option>
-          <option value="amp">AMP</option>
-          <option value="msg">The Message</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="btn-begin" id="btn-begin" onclick="startSession()" disabled>
-      Begin Session
-    </button>
   </div>
 
   <!-- ── CONVERSATION SCREEN ───────────────────────────────────────────── -->
@@ -664,13 +933,35 @@
     </div>
   </div>
 
+  <!-- ── DAILY EXERCISE SCREEN ─────────────────────────────────────────── -->
+  <div id="daily-screen">
+    <div class="daily-header">
+      <button class="btn-back" onclick="backToMain()">← Back</button>
+      <div class="convo-title-block">
+        <div class="convo-week-label" id="daily-week-label">Week 1 · Day 2</div>
+        <div class="convo-title" id="daily-exercise-name">The Alignment Check</div>
+      </div>
+    </div>
+
+    <div class="daily-revelation">
+      <div class="daily-revelation-label">This Week's Core Revelation</div>
+      <div class="daily-revelation-text" id="daily-revelation-text">—</div>
+    </div>
+
+    <!-- Day pip track -->
+    <div class="day-track" id="daily-pip-track"></div>
+
+    <!-- Day content (swapped for Day 7 review) -->
+    <div id="daily-exercise-content"></div>
+  </div>
+
 </div>
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL  = 'https://voyktzdqcjufcgfyabmb.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_9icwsb3kNFq3_qRBAtVQGg_1Nljhjp-';
-const API_BASE      = '';   // relative — same Vercel deployment
+const API_BASE      = '';
 
 // ── DATA ────────────────────────────────────────────────────────────────────
 const MOVEMENTS = {
@@ -693,14 +984,17 @@ const WEEK_META = {
   12: { theme: 'Security in God\'s Love',     passage: 'Romans 8:38–39' },
   13: { theme: 'Mature, Tested Conviction',   passage: 'Hebrews 10:35–36' }
 };
+const DAY_NAMES = ['', 'Word Within', 'Alignment', 'Filter', 'Relational', 'Extent', 'Gratitude', 'Review'];
 
 // ── STATE ───────────────────────────────────────────────────────────────────
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 let currentUser   = null;
 let accessToken   = null;
 let progress      = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
+let dailyData     = null;   // result of GET /api/daily?week=N
 let selectedWeek  = 1;
 let selectedMode  = null;   // 'word' | 'spirit'
+let currentDay    = null;   // 2–7 for daily exercises
 let messages      = [];
 let isLoading     = false;
 let exchangeCount = 0;
@@ -748,7 +1042,7 @@ async function handleSignUp() {
 async function handleSignOut() {
   await sb.auth.signOut();
   currentUser = null; accessToken = null;
-  messages = []; selectedMode = null;
+  messages = []; selectedMode = null; dailyData = null;
   showScreen('auth');
 }
 
@@ -768,6 +1062,16 @@ async function loadProgress() {
   } catch (e) {
     progress = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
   }
+  selectedWeek = progress.current_week || 1;
+  await loadDailyData(selectedWeek);
+}
+
+async function loadDailyData(week) {
+  try {
+    dailyData = await authFetch(`/api/daily?week=${week}`, { method: 'GET' });
+  } catch (e) {
+    dailyData = null;
+  }
 }
 
 async function markComplete(week, mode) {
@@ -778,6 +1082,7 @@ async function markComplete(week, mode) {
       body: JSON.stringify({ action: 'complete_session', week, mode })
     });
     progress = r;
+    await loadDailyData(week);
     renderMain();
   } catch (e) { /* silent */ }
 }
@@ -796,15 +1101,14 @@ async function authFetch(url, opts = {}) {
 
 // ── RENDER MAIN ──────────────────────────────────────────────────────────────
 function renderMain() {
-  selectedWeek = progress.current_week || 1;
   renderMovement();
   renderWeekGrid();
-  renderModeCards();
-  updateBeginButton();
+  renderJourney();
+  renderSpiritCard();
 }
 
 function movementForWeek(w) {
-  for (const [m, def] of Object.entries(MOVEMENTS)) {
+  for (const [, def] of Object.entries(MOVEMENTS)) {
     if (def.weeks.includes(w)) return def;
   }
   return MOVEMENTS[1];
@@ -829,70 +1133,155 @@ function renderWeekGrid() {
         <div class="dot ${wordDone ? 'word-done' : ''}"></div>
         <div class="dot ${spiritDone ? 'spirit-done' : ''}"></div>
       </div>`;
-    btn.onclick = () => {
+    btn.onclick = async () => {
       selectedWeek = w;
-      selectedMode = null;
+      await loadDailyData(w);
       renderWeekGrid();
       renderMovement();
-      renderModeCards();
-      updateBeginButton();
+      renderJourney();
+      renderSpiritCard();
     };
     grid.appendChild(btn);
   }
 }
 
-function renderModeCards() {
-  const wordDone   = progress.word_weeks_completed.includes(selectedWeek);
-  const spiritDone = progress.spirit_weeks_completed.includes(selectedWeek);
+function renderJourney() {
+  const section = document.getElementById('journey-section');
+  section.innerHTML = '';
 
-  document.getElementById('word-done-badge').classList.toggle('hidden', !wordDone);
-  document.getElementById('spirit-done-badge').classList.toggle('hidden', !spiritDone);
+  const wordDone = progress.word_weeks_completed.includes(selectedWeek);
+  const meta = WEEK_META[selectedWeek];
 
-  document.getElementById('mode-word').classList.toggle('selected', selectedMode === 'word');
-  document.getElementById('mode-spirit').classList.toggle('selected', selectedMode === 'spirit');
-
-  // Show translation only for Word Within
-  document.getElementById('translation-section').classList.toggle('hidden', selectedMode !== 'word');
-}
-
-function selectMode(mode) {
-  selectedMode = mode;
-  renderModeCards();
-  updateBeginButton();
-}
-
-function updateBeginButton() {
-  const btn = document.getElementById('btn-begin');
-  btn.disabled = !selectedMode;
-  if (selectedMode) {
-    const label = selectedMode === 'word' ? 'Begin Word Within — Week ' + selectedWeek
-                                           : 'Begin Spirit Within — Week ' + selectedWeek;
-    btn.textContent = label;
-  } else {
-    btn.textContent = 'Begin Session';
+  if (!wordDone) {
+    // ── Day 1 not yet done: show Word Within as primary CTA ──
+    section.innerHTML = `
+      <div class="action-card" onclick="startWordSession()">
+        <div class="action-card-icon">📖</div>
+        <div class="action-card-body">
+          <div class="action-card-label">Day 1 · Week ${selectedWeek} · ${meta.theme}</div>
+          <div class="action-card-name">Word Within</div>
+          <div class="action-card-desc">Guided Scripture meditation — 15–20 min<br>Passage: ${meta.passage}</div>
+        </div>
+      </div>
+      <div class="translation-row">
+        <label>Translation</label>
+        <select id="translation-select">
+          <option value="nkjv" selected>NKJV (default)</option>
+          <option value="esv">ESV</option>
+          <option value="niv">NIV</option>
+          <option value="nasb">NASB</option>
+          <option value="csb">CSB</option>
+          <option value="kjv">KJV</option>
+          <option value="nlt">NLT</option>
+          <option value="amp">AMP</option>
+          <option value="msg">The Message</option>
+        </select>
+      </div>`;
+    return;
   }
+
+  // ── Day 1 done: show revelation card + day pip track + next exercise ──
+  const revelation = dailyData?.core_revelation || null;
+  const completedDays = dailyData?.completed_days || [];
+  const nextDay = dailyData?.next_day || null;
+
+  // Revelation card
+  if (revelation) {
+    const revCard = document.createElement('div');
+    revCard.className = 'revelation-card';
+    revCard.innerHTML = `
+      <div class="revelation-label">Week ${selectedWeek} Core Revelation</div>
+      <div class="revelation-text">${escHtml(revelation)}</div>`;
+    section.appendChild(revCard);
+  }
+
+  // Day pip track (Days 1–7)
+  const track = document.createElement('div');
+  track.className = 'day-track';
+  for (let d = 1; d <= 7; d++) {
+    const isDone = d === 1 ? true : completedDays.includes(d);
+    const isCurrent = d === nextDay;
+    const wrap = document.createElement('div');
+    wrap.className = 'day-pip-wrap' + (d < 7 && (d === 1 || completedDays.includes(d)) ? ' done' : '');
+    const pip = document.createElement('div');
+    pip.className = 'day-pip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
+    pip.textContent = d;
+    const lbl = document.createElement('div');
+    lbl.className = 'day-pip-label' + (isCurrent ? ' current' : '');
+    lbl.textContent = DAY_NAMES[d];
+    wrap.appendChild(pip);
+    wrap.appendChild(lbl);
+    track.appendChild(wrap);
+  }
+  section.appendChild(track);
+
+  // If all 7 days complete
+  if (!nextDay) {
+    const done = document.createElement('div');
+    done.className = 'action-card week-complete';
+    done.innerHTML = `
+      <div class="action-card-icon">✅</div>
+      <div class="action-card-body">
+        <div class="action-card-name">Week ${selectedWeek} Complete</div>
+        <div class="action-card-desc">All seven days finished. Choose a new week above to continue.</div>
+      </div>`;
+    section.appendChild(done);
+    return;
+  }
+
+  // Show next day's exercise card
+  const ex = dailyData?.all_exercises?.[nextDay] || dailyData?.exercise || {};
+  const card = document.createElement('div');
+  card.className = 'action-card';
+  card.onclick = () => startDailyExercise(nextDay);
+  card.innerHTML = `
+    <div class="action-card-icon">${nextDay === 7 ? '🪞' : '✍️'}</div>
+    <div class="action-card-body">
+      <div class="action-card-label">Day ${nextDay} · 5–10 minutes</div>
+      <div class="action-card-name">${escHtml(ex.name || '')}</div>
+      <div class="action-card-desc">${escHtml(ex.question || '')}</div>
+    </div>`;
+  section.appendChild(card);
+
+  // Also show Word Within as "revisit" link
+  const revisit = document.createElement('div');
+  revisit.className = 'action-card';
+  revisit.style.opacity = '0.6';
+  revisit.onclick = startWordSession;
+  revisit.innerHTML = `
+    <div class="action-card-icon">📖</div>
+    <div class="action-card-body">
+      <div class="action-card-label">Day 1 · Completed</div>
+      <div class="action-card-name">Word Within</div>
+      <div class="action-card-desc">Revisit the Scripture conversation</div>
+      <div class="action-card-done">Completed</div>
+    </div>`;
+  section.appendChild(revisit);
 }
 
-// ── SESSION START ────────────────────────────────────────────────────────────
-async function startSession() {
-  if (!selectedMode) return;
+function renderSpiritCard() {
+  const spiritDone = progress.spirit_weeks_completed.includes(selectedWeek);
+  document.getElementById('spirit-week-label').textContent = selectedWeek;
+  document.getElementById('spirit-done-badge').classList.toggle('hidden', !spiritDone);
+}
+
+// ── SESSION STARTS ───────────────────────────────────────────────────────────
+function startWordSession() {
+  selectedMode = 'word';
   messages = [];
   exchangeCount = 0;
 
-  // Update convo header
   const meta = WEEK_META[selectedWeek];
   document.getElementById('convo-week-label').textContent = `Week ${selectedWeek} · ${meta.theme}`;
-  document.getElementById('convo-title').textContent =
-    selectedMode === 'word' ? 'Word Within' : 'Spirit Within';
+  document.getElementById('convo-title').textContent = 'Word Within';
 
-  // Passage reference for Word Within
   const passageRef = document.getElementById('passage-ref');
-  if (selectedMode === 'word') {
-    passageRef.textContent = meta.passage;
-    passageRef.classList.remove('hidden');
-  } else {
-    passageRef.classList.add('hidden');
-  }
+  passageRef.textContent = meta.passage;
+  passageRef.classList.remove('hidden');
+
+  // Get translation if selector exists in DOM
+  const tsel = document.getElementById('translation-select');
+  startWordSession._translation = tsel ? tsel.value : 'nkjv';
 
   document.getElementById('messages').innerHTML = '';
   document.getElementById('session-complete-banner').classList.add('hidden');
@@ -901,13 +1290,214 @@ async function startSession() {
 
   showScreen('convo');
 
-  // Get opening message from AI
   setLoading(true);
-  await sendToAPI('', true);
-  setLoading(false);
+  sendToAPI('', true).then(() => setLoading(false));
 }
 
-// ── MESSAGING ────────────────────────────────────────────────────────────────
+function startSpiritSession() {
+  selectedMode = 'spirit';
+  messages = [];
+  exchangeCount = 0;
+
+  const meta = WEEK_META[selectedWeek];
+  document.getElementById('convo-week-label').textContent = `Week ${selectedWeek}`;
+  document.getElementById('convo-title').textContent = 'Spirit Within';
+
+  document.getElementById('passage-ref').classList.add('hidden');
+
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('session-complete-banner').classList.add('hidden');
+  document.getElementById('session-complete-banner').innerHTML = '';
+  document.getElementById('input-row').classList.remove('hidden');
+
+  showScreen('convo');
+
+  setLoading(true);
+  sendToAPI('', true).then(() => setLoading(false));
+}
+
+function startDailyExercise(day) {
+  currentDay = day;
+  const ex = dailyData?.all_exercises?.[day] || {};
+  const revelation = dailyData?.core_revelation || '';
+  const completedDays = dailyData?.completed_days || [];
+
+  document.getElementById('daily-week-label').textContent = `Week ${selectedWeek} · Day ${day}`;
+  document.getElementById('daily-exercise-name').textContent = ex.name || '';
+  document.getElementById('daily-revelation-text').textContent = revelation || '(No Core Revelation found — complete Day 1 first)';
+
+  // Pip track
+  renderDailyPips(completedDays, day);
+
+  // Content
+  const content = document.getElementById('daily-exercise-content');
+  if (day === 7) {
+    renderWeekReview(content, ex);
+  } else {
+    renderDailyForm(content, ex, day);
+  }
+
+  showScreen('daily');
+}
+
+function renderDailyPips(completedDays, currentDayNum) {
+  const track = document.getElementById('daily-pip-track');
+  track.innerHTML = '';
+  for (let d = 1; d <= 7; d++) {
+    const isDone = d === 1 ? true : completedDays.includes(d);
+    const isCurrent = d === currentDayNum;
+    const wrap = document.createElement('div');
+    wrap.className = 'day-pip-wrap' + (d < 7 && (d === 1 || completedDays.includes(d)) ? ' done' : '');
+    const pip = document.createElement('div');
+    pip.className = 'day-pip' + (isDone ? ' done' : '') + (isCurrent ? ' current' : '');
+    pip.textContent = d;
+    const lbl = document.createElement('div');
+    lbl.className = 'day-pip-label' + (isCurrent ? ' current' : '');
+    lbl.textContent = DAY_NAMES[d];
+    wrap.appendChild(pip);
+    wrap.appendChild(lbl);
+    track.appendChild(wrap);
+  }
+}
+
+function renderDailyForm(container, ex, day) {
+  container.innerHTML = `
+    <div class="daily-day-label">Day ${day} · 5–10 minutes</div>
+    <div class="daily-exercise-name">${escHtml(ex.name || '')}</div>
+
+    <div class="daily-question">${escHtml(ex.question || '')}</div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-label">To what extent is this truth ruling your heart right now?</span>
+        <span class="slider-val" id="slider-display">5</span>
+      </div>
+      <div class="slider-track">
+        <span class="slider-endpoint">1</span>
+        <input type="range" id="extent-slider" min="1" max="10" value="5"
+               oninput="updateSliderVal(this.value)">
+        <span class="slider-endpoint">10</span>
+      </div>
+    </div>
+
+    <div class="reflection-wrap">
+      <label class="reflection-label">
+        One-sentence reflection
+        <span class="reflection-optional">(optional)</span>
+      </label>
+      <textarea class="daily-reflection" id="daily-reflection-input"
+        placeholder="What came to mind as you considered this question?"></textarea>
+    </div>
+
+    <button class="btn-submit" id="btn-daily-submit" onclick="submitDaily()">
+      Submit &amp; Continue
+    </button>`;
+}
+
+function renderWeekReview(container, ex) {
+  const scores = dailyData?.week_scores || [];
+  let scoresHtml = '';
+  if (scores.length > 0) {
+    const rows = scores.map(s => `
+      <div class="score-row">
+        <span class="score-row-name">Day ${s.day} · ${escHtml(s.name)}</span>
+        ${s.score !== null
+          ? `<span class="score-row-val">${s.score}/10</span>`
+          : `<span class="score-row-missing">not recorded</span>`}
+      </div>`).join('');
+    scoresHtml = `
+      <div class="week-review">
+        <div class="week-review-title">Your Weekly Scores</div>
+        ${rows}
+      </div>`;
+  }
+
+  container.innerHTML = `
+    <div class="daily-day-label">Day 7 · Weekly Review</div>
+    <div class="daily-exercise-name">${escHtml(ex.name || 'The Weekly Review')}</div>
+
+    ${scoresHtml}
+
+    <div class="daily-question">${escHtml(ex.question || '')}</div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-label">Overall — how much did this revelation change you this week?</span>
+        <span class="slider-val" id="slider-display">5</span>
+      </div>
+      <div class="slider-track">
+        <span class="slider-endpoint">1</span>
+        <input type="range" id="extent-slider" min="1" max="10" value="5"
+               oninput="updateSliderVal(this.value)">
+        <span class="slider-endpoint">10</span>
+      </div>
+    </div>
+
+    <div class="reflection-wrap">
+      <label class="reflection-label">
+        Your weekly reflection
+        <span class="reflection-optional">(optional)</span>
+      </label>
+      <textarea class="daily-reflection" id="daily-reflection-input"
+        placeholder="What is the most permanent change this revelation has made in your heart?"></textarea>
+    </div>
+
+    <button class="btn-submit" id="btn-daily-submit" onclick="submitReview()">
+      Complete This Week
+    </button>`;
+}
+
+function updateSliderVal(val) {
+  const el = document.getElementById('slider-display');
+  if (el) el.textContent = val;
+}
+
+async function submitDaily() {
+  const score = parseInt(document.getElementById('extent-slider')?.value || '5', 10);
+  const reflection = (document.getElementById('daily-reflection-input')?.value || '').trim();
+
+  const btn = document.getElementById('btn-daily-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  try {
+    await authFetch('/api/daily', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ week: selectedWeek, day: currentDay, score, reflection })
+    });
+    await loadDailyData(selectedWeek);
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit & Continue'; }
+    return;
+  }
+
+  backToMain();
+}
+
+async function submitReview() {
+  const score = parseInt(document.getElementById('extent-slider')?.value || '5', 10);
+  const reflection = (document.getElementById('daily-reflection-input')?.value || '').trim();
+
+  const btn = document.getElementById('btn-daily-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Completing…'; }
+
+  try {
+    await authFetch('/api/daily', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ week: selectedWeek, day: 7, score, reflection })
+    });
+    await loadDailyData(selectedWeek);
+    renderMain();
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Complete This Week'; }
+    return;
+  }
+
+  backToMain();
+}
+
+// ── MESSAGING (Conversation screen) ─────────────────────────────────────────
 function handleKeyDown(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
@@ -936,25 +1526,22 @@ async function sendMessage() {
 }
 
 async function sendToAPI(userText, isOpening) {
-  const endpoint = selectedMode === 'word' ? '/api/chat' : '/api/spirit';
+  const endpoint = selectedMode === 'spirit' ? '/api/spirit' : '/api/chat';
 
-  // For opening: seed the messages array with the trigger message
   if (isOpening) {
     messages.push({ role: 'user', content: 'Begin the session.' });
   }
 
   try {
     showTyping(true);
+    const translation = selectedMode === 'word'
+      ? (startWordSession._translation || 'nkjv')
+      : undefined;
+
     const data = await authFetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: messages,
-        week: selectedWeek,
-        translation: selectedMode === 'word'
-          ? document.getElementById('translation-select').value
-          : undefined
-      })
+      body: JSON.stringify({ messages, week: selectedWeek, translation })
     });
 
     showTyping(false);
@@ -965,8 +1552,7 @@ async function sendToAPI(userText, isOpening) {
     }
     exchangeCount++;
 
-    // End session if AI signals done, or if hard exchange limit reached
-    const maxEx = MAX_EXCHANGES[selectedMode];
+    const maxEx = MAX_EXCHANGES[selectedMode] || 20;
     if (data.done || exchangeCount >= maxEx) {
       showSessionComplete();
     }
@@ -1016,19 +1602,28 @@ function showTyping(show) {
 
 function setLoading(val) {
   isLoading = val;
-  document.getElementById('btn-send').disabled = val;
-  document.getElementById('user-input').disabled = val;
+  const btnSend = document.getElementById('btn-send');
+  const userInput = document.getElementById('user-input');
+  if (btnSend) btnSend.disabled = val;
+  if (userInput) userInput.disabled = val;
 }
 
 function showSessionComplete() {
   const banner = document.getElementById('session-complete-banner');
   const modeLabel = selectedMode === 'word' ? 'Word Within' : 'Spirit Within';
+
+  let message = `You have finished your ${modeLabel} session for Week ${selectedWeek}.`;
+  if (selectedMode === 'word') {
+    message += ' Your Core Revelation for this week is being saved — check back tomorrow for Day 2.';
+  } else {
+    message += ' Come back each day this week for the daily integration exercises.';
+  }
+
   banner.innerHTML = `
     <div class="session-complete">
       <h3>Session Complete</h3>
-      <p>You have finished your ${modeLabel} session for Week ${selectedWeek}.<br>
-         Come back to this passage each day this week.</p>
-      <button class="btn-done" onclick="finishSession()">Mark as Complete</button>
+      <p>${message}</p>
+      <button class="btn-done" id="btn-finish" onclick="finishSession()">Mark as Complete</button>
     </div>`;
   banner.classList.remove('hidden');
   document.getElementById('input-row').classList.add('hidden');
@@ -1036,22 +1631,52 @@ function showSessionComplete() {
 }
 
 async function finishSession() {
+  const btn = document.getElementById('btn-finish');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  // For Word Within: extract Core Revelation before marking complete
+  if (selectedMode === 'word') {
+    try {
+      const planData = await authFetch('/api/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, week: selectedWeek })
+      });
+      if (planData.core_revelation && dailyData) {
+        dailyData.core_revelation = planData.core_revelation;
+      }
+    } catch (e) {
+      // Non-fatal — proceed with marking complete
+    }
+  }
+
   await markComplete(selectedWeek, selectedMode);
   backToMain();
 }
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
 function showScreen(name) {
-  document.getElementById('auth-screen').style.display = name === 'auth'  ? 'flex' : 'none';
-  document.getElementById('main-screen').style.display = name === 'main'  ? 'block' : 'none';
+  document.getElementById('auth-screen').style.display  = name === 'auth'  ? 'flex'  : 'none';
+  document.getElementById('main-screen').style.display  = name === 'main'  ? 'block' : 'none';
   document.getElementById('convo-screen').style.display = name === 'convo' ? 'block' : 'none';
+  document.getElementById('daily-screen').style.display = name === 'daily' ? 'block' : 'none';
 }
 
 function backToMain() {
-  showScreen('main');
   selectedMode = null;
-  renderModeCards();
-  updateBeginButton();
+  currentDay   = null;
+  renderMain();
+  showScreen('main');
+}
+
+// ── UTIL ─────────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
