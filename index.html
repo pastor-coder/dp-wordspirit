@@ -407,6 +407,209 @@
     margin: 20px 0 16px;
   }
 
+  .spirit-chapter-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 18px;
+    padding-left: 2px;
+  }
+
+  /* ── SPIRIT DAILY TAG ───────────────────────────────────────────────── */
+  .spirit-daily-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+
+  .spirit-daily-header {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+  }
+
+  .spirit-tags-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .spirit-tag-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .spirit-tag-btn:hover { border-color: var(--amber); background: var(--surface2); }
+  .spirit-tag-btn.selected { border-color: var(--amber); background: var(--surface2); }
+  .spirit-tag-btn.selected .spirit-tag-emoji { font-size: 1.3rem; }
+
+  .spirit-tag-emoji { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+  .spirit-tag-body { flex: 1; }
+  .spirit-tag-label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 2px;
+  }
+  .spirit-tag-desc {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--cream-dim);
+    line-height: 1.4;
+  }
+
+  .spirit-note-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    min-height: 60px;
+    font-family: var(--font-sans);
+    transition: border-color 0.12s;
+    margin-bottom: 10px;
+    margin-top: 8px;
+  }
+  .spirit-note-input:focus { border-color: var(--amber); }
+  .spirit-note-input::placeholder { color: var(--muted); }
+
+  /* Today's logged state */
+  .spirit-today-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .spirit-today-card.logged { border-color: var(--success); }
+  .spirit-today-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--success);
+    margin-bottom: 6px;
+  }
+  .spirit-today-tag {
+    font-family: var(--font-serif);
+    color: var(--cream);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+  .spirit-today-note {
+    font-size: 0.8rem;
+    color: var(--cream-dim);
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .spirit-edit-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: var(--radius);
+    font-size: 0.72rem;
+    cursor: pointer;
+  }
+  .spirit-edit-btn:hover { color: var(--cream); border-color: var(--cream-dim); }
+
+  /* ── EVIDENCE REVIEW SCREEN ─────────────────────────────────────────── */
+  #spirit-evidence-screen { display: none; padding-top: 16px; }
+
+  .evidence-header-note {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--amber-light);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    padding: 14px 16px;
+    background: var(--surface);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin-bottom: 20px;
+  }
+
+  .evidence-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .evidence-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+  .evidence-summary-item.own { border-color: var(--muted); opacity: 0.7; }
+  .evidence-summary-emoji { font-size: 0.9rem; }
+  .evidence-summary-label { color: var(--cream-dim); }
+  .evidence-summary-count {
+    font-weight: 700;
+    color: var(--amber-light);
+    font-family: var(--font-serif);
+  }
+
+  .evidence-list { margin-bottom: 32px; }
+
+  .evidence-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .evidence-entry.own { opacity: 0.65; }
+  .evidence-entry-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .evidence-entry-tag {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .evidence-entry-date {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .evidence-entry-note {
+    font-size: 0.8rem;
+    color: var(--cream-dim);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .evidence-empty {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+    padding: 24px 0;
+  }
+
   /* ── CONVERSATION SCREEN ────────────────────────────────────────────── */
   #convo-screen { display: none; padding-top: 16px; }
 
@@ -893,18 +1096,46 @@
     <div class="section-heading" id="journey-heading">This Week's Journey</div>
     <div class="journey-section" id="journey-section"></div>
 
-    <!-- Spirit Within — always-accessible separate track -->
+    <!-- Spirit Within — independent track (Chapter 8) -->
     <hr class="spirit-divider">
-    <div class="section-heading">Spirit Within — Separate Track</div>
+    <div class="section-heading">Spirit Within</div>
+    <div class="spirit-chapter-note">Chapter 8: The Work of the Holy Spirit in Building Resilience</div>
+
+    <!-- Level 1: Daily Tag -->
+    <div id="spirit-daily-section"></div>
+
+    <!-- Level 2: Weekly Check-In -->
     <div class="action-card" onclick="startSpiritSession()">
       <div class="action-card-icon">🕊</div>
       <div class="action-card-body">
-        <div class="action-card-label">Week <span id="spirit-week-label">1</span> · Weekly Check-In</div>
-        <div class="action-card-name">Spirit Within</div>
-        <div class="action-card-desc">Weekly sensitivity check — 5–7 minutes</div>
+        <div class="action-card-label">Level 2 · Week <span id="spirit-week-label">1</span> · Weekly Check-In</div>
+        <div class="action-card-name">Spirit Within Conversation</div>
+        <div class="action-card-desc">Developing discernment and spiritual awareness — 5–7 min</div>
         <div id="spirit-done-badge" class="action-card-done hidden">Completed this week</div>
       </div>
     </div>
+
+    <!-- Level 3: Evidence Review (accessible anytime) -->
+    <div class="action-card" onclick="showEvidenceReview()">
+      <div class="action-card-icon">📋</div>
+      <div class="action-card-body">
+        <div class="action-card-label">Level 3 · Evidence Case File</div>
+        <div class="action-card-name">My Spirit Within Record</div>
+        <div class="action-card-desc" id="evidence-count-desc">Review all logged moments of the Spirit's work</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SPIRIT EVIDENCE REVIEW SCREEN ───────────────────────────────────── -->
+  <div id="spirit-evidence-screen">
+    <div class="convo-header">
+      <button class="btn-back" onclick="backToMain()">← Back</button>
+      <div class="convo-title-block">
+        <div class="convo-week-label">Spirit Within</div>
+        <div class="convo-title">My Evidence Case File</div>
+      </div>
+    </div>
+    <div id="evidence-content"></div>
   </div>
 
   <!-- ── CONVERSATION SCREEN ───────────────────────────────────────────── -->
@@ -986,19 +1217,30 @@ const WEEK_META = {
 };
 const DAY_NAMES = ['', 'Word Within', 'Alignment', 'Filter', 'Relational', 'Extent', 'Gratitude', 'Review'];
 
+// ── SPIRIT TAGS (Chapter 8 — four dimensions + honest counterpart) ───────────
+const SPIRIT_TAGS = [
+  { id: 'empowered',   emoji: '💪', label: 'Empowered',          desc: 'I received strength I couldn\'t produce' },
+  { id: 'transformed', emoji: '🌱', label: 'Transformed',        desc: 'I responded differently than my default' },
+  { id: 'comforted',   emoji: '🕊️', label: 'Comforted / Guided', desc: 'Peace or direction I couldn\'t manufacture' },
+  { id: 'interceded',  emoji: '🙏', label: 'Interceded',         desc: 'Drawn to prayer unexpectedly' },
+  { id: 'own',         emoji: '⚠️', label: 'On my own',          desc: 'I caught myself striving' }
+];
+
 // ── STATE ───────────────────────────────────────────────────────────────────
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-let currentUser   = null;
-let accessToken   = null;
-let progress      = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
-let dailyData     = null;   // result of GET /api/daily?week=N
-let selectedWeek  = 1;
-let selectedMode  = null;   // 'word' | 'spirit'
-let currentDay    = null;   // 2–7 for daily exercises
-let messages      = [];
-let isLoading     = false;
-let exchangeCount = 0;
-const MAX_EXCHANGES = { word: 20, spirit: 10 };
+let currentUser      = null;
+let accessToken      = null;
+let progress         = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
+let dailyData        = null;   // result of GET /api/daily?week=N
+let spiritLogs       = null;   // result of GET /api/spirit-daily
+let selectedWeek     = 1;
+let selectedMode     = null;   // 'word' | 'spirit'
+let currentDay       = null;   // 2–7 for daily exercises
+let selectedSpiritTag = null;  // tag being selected in Level 1 UI
+let messages         = [];
+let isLoading        = false;
+let exchangeCount    = 0;
+const MAX_EXCHANGES  = { word: 20, spirit: 10 };
 
 // ── AUTH HELPERS ────────────────────────────────────────────────────────────
 function switchAuthTab(tab) {
@@ -1063,7 +1305,18 @@ async function loadProgress() {
     progress = { current_week: 1, word_weeks_completed: [], spirit_weeks_completed: [] };
   }
   selectedWeek = progress.current_week || 1;
-  await loadDailyData(selectedWeek);
+  await Promise.all([
+    loadDailyData(selectedWeek),
+    loadSpiritLogs()
+  ]);
+}
+
+async function loadSpiritLogs() {
+  try {
+    spiritLogs = await authFetch('/api/spirit-daily', { method: 'GET' });
+  } catch (e) {
+    spiritLogs = { logs: [], counts: {}, total: 0, today_logged: false, today_log: null };
+  }
 }
 
 async function loadDailyData(week) {
@@ -1104,7 +1357,7 @@ function renderMain() {
   renderMovement();
   renderWeekGrid();
   renderJourney();
-  renderSpiritCard();
+  renderSpiritSection();
 }
 
 function movementForWeek(w) {
@@ -1259,10 +1512,161 @@ function renderJourney() {
   section.appendChild(revisit);
 }
 
-function renderSpiritCard() {
-  const spiritDone = progress.spirit_weeks_completed.includes(selectedWeek);
+// ── SPIRIT WITHIN SECTION ────────────────────────────────────────────────────
+
+function renderSpiritSection() {
+  // Level 2 card — week label + done badge
   document.getElementById('spirit-week-label').textContent = selectedWeek;
+  const spiritDone = progress.spirit_weeks_completed.includes(selectedWeek);
   document.getElementById('spirit-done-badge').classList.toggle('hidden', !spiritDone);
+
+  // Level 1 — daily tag
+  renderSpiritDailyLog();
+
+  // Level 3 — evidence count
+  renderEvidenceCount();
+}
+
+function renderSpiritDailyLog() {
+  const section = document.getElementById('spirit-daily-section');
+  if (!section) return;
+
+  if (spiritLogs && spiritLogs.today_logged) {
+    const log = spiritLogs.today_log;
+    const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
+    section.innerHTML = `
+      <div class="spirit-today-card logged">
+        <div class="spirit-today-label">✓ Today's Log</div>
+        <div class="spirit-today-tag">${tag ? tag.emoji + ' ' + tag.label : log.tag}</div>
+        ${log.note ? `<div class="spirit-today-note">${escHtml(log.note)}</div>` : ''}
+        <button class="spirit-edit-btn" onclick="renderSpiritTagForm()">Edit</button>
+      </div>`;
+  } else {
+    renderSpiritTagForm();
+  }
+}
+
+function renderSpiritTagForm() {
+  const section = document.getElementById('spirit-daily-section');
+  if (!section) return;
+  selectedSpiritTag = null;
+
+  const tagsHtml = SPIRIT_TAGS.map(t => `
+    <button class="spirit-tag-btn" id="stag-${t.id}" onclick="selectSpiritTag('${t.id}')">
+      <span class="spirit-tag-emoji">${t.emoji}</span>
+      <div class="spirit-tag-body">
+        <span class="spirit-tag-label">${t.label}</span>
+        <span class="spirit-tag-desc">${t.desc}</span>
+      </div>
+    </button>`).join('');
+
+  section.innerHTML = `
+    <div class="spirit-daily-card">
+      <div class="spirit-daily-header">What did the Holy Spirit do today?</div>
+      <div class="spirit-tags-grid">${tagsHtml}</div>
+      <div id="spirit-note-wrap" class="hidden">
+        <textarea id="spirit-note-input" class="spirit-note-input"
+          placeholder="One sentence (optional)…" maxlength="280"></textarea>
+      </div>
+      <div id="spirit-submit-wrap" class="hidden">
+        <button class="btn-submit" id="btn-spirit-submit" onclick="submitSpiritTag()">
+          Log This Moment
+        </button>
+      </div>
+    </div>`;
+}
+
+function selectSpiritTag(tagId) {
+  selectedSpiritTag = tagId;
+  document.querySelectorAll('.spirit-tag-btn').forEach(btn => btn.classList.remove('selected'));
+  const btn = document.getElementById('stag-' + tagId);
+  if (btn) btn.classList.add('selected');
+  document.getElementById('spirit-note-wrap').classList.remove('hidden');
+  document.getElementById('spirit-submit-wrap').classList.remove('hidden');
+}
+
+async function submitSpiritTag() {
+  if (!selectedSpiritTag) return;
+  const note = (document.getElementById('spirit-note-input')?.value || '').trim();
+  const btn = document.getElementById('btn-spirit-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  try {
+    await authFetch('/api/spirit-daily', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tag: selectedSpiritTag, note: note || null, week: selectedWeek })
+    });
+    await loadSpiritLogs();
+    selectedSpiritTag = null;
+    renderSpiritSection();
+  } catch (e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Log This Moment'; }
+  }
+}
+
+function renderEvidenceCount() {
+  const el = document.getElementById('evidence-count-desc');
+  if (!el) return;
+  const total = spiritLogs?.total || 0;
+  el.textContent = total > 0
+    ? `${total} moment${total === 1 ? '' : 's'} recorded — tap to review`
+    : 'Review all logged moments of the Spirit\'s work';
+}
+
+function showEvidenceReview() {
+  const content = document.getElementById('evidence-content');
+  if (!content) return;
+
+  const logs = spiritLogs?.logs || [];
+  const counts = spiritLogs?.counts || {};
+
+  // Summary chips
+  const summaryItems = SPIRIT_TAGS
+    .filter(t => t.id !== 'own' && (counts[t.id] || 0) > 0)
+    .map(t => `
+      <div class="evidence-summary-item">
+        <span class="evidence-summary-emoji">${t.emoji}</span>
+        <span class="evidence-summary-label">${t.label}</span>
+        <span class="evidence-summary-count">${counts[t.id]}</span>
+      </div>`).join('');
+
+  const ownCount = counts['own'] || 0;
+  const ownChip = ownCount > 0 ? `
+    <div class="evidence-summary-item own">
+      <span class="evidence-summary-emoji">⚠️</span>
+      <span class="evidence-summary-label">On my own</span>
+      <span class="evidence-summary-count">${ownCount}</span>
+    </div>` : '';
+
+  // Log entries
+  const entriesHtml = logs.length === 0
+    ? '<p class="evidence-empty">No moments logged yet. Use the daily tag each day to build your evidence file.</p>'
+    : logs.map(log => {
+        const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
+        const d = new Date(log.log_date + 'T12:00:00');
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return `
+          <div class="evidence-entry${log.tag === 'own' ? ' own' : ''}">
+            <div class="evidence-entry-top">
+              <span class="evidence-entry-tag">${tag ? tag.emoji + ' ' + tag.label : log.tag}</span>
+              <span class="evidence-entry-date">${dateStr}</span>
+            </div>
+            ${log.note ? `<div class="evidence-entry-note">${escHtml(log.note)}</div>` : ''}
+          </div>`;
+      }).join('');
+
+  content.innerHTML = `
+    <div class="evidence-header-note">
+      "Our resilience is not rooted in our own strength but in the indwelling presence of the Holy Spirit."
+    </div>
+    ${(summaryItems || ownChip) ? `<div class="evidence-summary">${summaryItems}${ownChip}</div>` : ''}
+    <div class="evidence-list">
+      <div class="section-heading">All Logged Moments</div>
+      ${entriesHtml}
+    </div>`;
+
+  showScreen('spirit-evidence');
 }
 
 // ── SESSION STARTS ───────────────────────────────────────────────────────────
@@ -1656,10 +2060,11 @@ async function finishSession() {
 
 // ── NAVIGATION ───────────────────────────────────────────────────────────────
 function showScreen(name) {
-  document.getElementById('auth-screen').style.display  = name === 'auth'  ? 'flex'  : 'none';
-  document.getElementById('main-screen').style.display  = name === 'main'  ? 'block' : 'none';
-  document.getElementById('convo-screen').style.display = name === 'convo' ? 'block' : 'none';
-  document.getElementById('daily-screen').style.display = name === 'daily' ? 'block' : 'none';
+  document.getElementById('auth-screen').style.display           = name === 'auth'             ? 'flex'  : 'none';
+  document.getElementById('main-screen').style.display           = name === 'main'             ? 'block' : 'none';
+  document.getElementById('convo-screen').style.display          = name === 'convo'            ? 'block' : 'none';
+  document.getElementById('daily-screen').style.display          = name === 'daily'            ? 'block' : 'none';
+  document.getElementById('spirit-evidence-screen').style.display = name === 'spirit-evidence' ? 'block' : 'none';
 }
 
 function backToMain() {
