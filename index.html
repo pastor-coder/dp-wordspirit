@@ -1498,7 +1498,7 @@ function renderWeekGrid() {
       renderWeekGrid();
       renderMovement();
       renderJourney();
-      renderSpiritCard();
+      renderSpiritSection();
     };
     grid.appendChild(btn);
   }
@@ -1720,9 +1720,13 @@ function renderEvidenceCount() {
     : 'Review all logged moments of the Spirit\'s work';
 }
 
-function showEvidenceReview() {
+async function showEvidenceReview() {
   const content = document.getElementById('evidence-content');
   if (!content) return;
+
+  // Always fetch fresh data before showing the evidence screen
+  await loadSpiritLogs();
+  renderEvidenceCount();
 
   const logs = spiritLogs?.logs || [];
   const counts = spiritLogs?.counts || {};
