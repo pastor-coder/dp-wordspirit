@@ -1016,6 +1016,77 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── PRIVACY MODAL ─────────────────────────────────────────────────── */
+  .privacy-footer {
+    text-align: center;
+    padding: 24px 0 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .privacy-footer a {
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .privacy-footer a:hover { color: var(--cream-dim); }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-title {
+    font-family: var(--font-serif);
+    color: var(--amber-light);
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
+  .modal-body {
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+    line-height: 1.75;
+  }
+  .modal-body h4 {
+    color: var(--cream);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 16px 0 6px;
+  }
+  .modal-body h4:first-child { margin-top: 0; }
+  .modal-close {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    padding: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cream-dim);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .modal-close:hover { border-color: var(--cream-dim); color: var(--cream); }
+
   .hidden { display: none !important; }
   .passage-ref {
     font-family: var(--font-serif);
@@ -1124,6 +1195,38 @@
         <div class="action-card-desc" id="evidence-count-desc">Review all logged moments of the Spirit's work</div>
       </div>
     </div>
+
+    <!-- Privacy footer -->
+    <div class="privacy-footer">
+      Your reflections are private and never stored.<br>
+      <a onclick="openPrivacyModal()">Privacy Policy</a>
+    </div>
+  </div>
+
+  <!-- ── PRIVACY POLICY MODAL ────────────────────────────────────────────── -->
+  <div id="privacy-modal" class="modal-overlay" onclick="closePrivacyModal(event)">
+    <div class="modal-card">
+      <div class="modal-title">Privacy Policy</div>
+      <div class="modal-body">
+        <h4>What we collect</h4>
+        <p>To run the app, we store your email address, your week completion progress, and your Spirit Within daily tags (e.g. "Empowered," "Comforted"). That's it.</p>
+
+        <h4>What we don't collect</h4>
+        <p>Your written reflections, your conversation responses, and anything you type into the app stays on your device only. It is never sent to our servers, never stored, and never seen by anyone — including the author.</p>
+
+        <h4>Your data is yours</h4>
+        <p>You can delete your account at any time. Deleting your account permanently removes all stored data.</p>
+
+        <h4>No third-party sharing</h4>
+        <p>We do not sell, share, or transfer your data to any third party.</p>
+
+        <p style="margin-top:16px; font-size:0.75rem; color:var(--muted);">
+          Word &amp; Spirit Companion — The Daniel Principle<br>
+          Last updated: October 2026
+        </p>
+      </div>
+      <button class="modal-close" onclick="closePrivacyModal()">Close</button>
+    </div>
   </div>
 
   <!-- ── SPIRIT EVIDENCE REVIEW SCREEN ───────────────────────────────────── -->
@@ -1174,13 +1277,16 @@
       </div>
     </div>
 
+    <!-- Day pip track -->
+    <div class="day-track" id="daily-pip-track"></div>
+
+    <!-- Scripture passage for this week -->
+    <div class="passage-ref hidden" id="daily-passage-ref"></div>
+
     <div class="daily-revelation">
       <div class="daily-revelation-label">This Week's Core Revelation</div>
       <div class="daily-revelation-text" id="daily-revelation-text">—</div>
     </div>
-
-    <!-- Day pip track -->
-    <div class="day-track" id="daily-pip-track"></div>
 
     <!-- Day content (swapped for Day 7 review) -->
     <div id="daily-exercise-content"></div>
@@ -1730,6 +1836,14 @@ function startDailyExercise(day) {
   document.getElementById('daily-exercise-name').textContent = ex.name || '';
   document.getElementById('daily-revelation-text').textContent = revelation || '(No Core Revelation found — complete Day 1 first)';
 
+  // Show this week's Scripture passage
+  const passageEl = document.getElementById('daily-passage-ref');
+  if (passageEl) {
+    const passage = WEEK_META[selectedWeek]?.passage || '';
+    passageEl.textContent = passage;
+    passageEl.classList.toggle('hidden', !passage);
+  }
+
   // Pip track
   renderDailyPips(completedDays, day);
 
@@ -1766,10 +1880,15 @@ function renderDailyPips(completedDays, currentDayNum) {
 
 function renderDailyForm(container, ex, day) {
   container.innerHTML = `
-    <div class="daily-day-label">Day ${day} · 5–10 minutes</div>
-    <div class="daily-exercise-name">${escHtml(ex.name || '')}</div>
-
     <div class="daily-question">${escHtml(ex.question || '')}</div>
+
+    <div class="reflection-wrap">
+      <label class="reflection-label">Your response</label>
+      <textarea class="daily-reflection" id="daily-reflection-input"
+        placeholder="Write your response here…"></textarea>
+    </div>
+
+    <hr class="spirit-divider">
 
     <div class="slider-wrap">
       <div class="slider-header">
@@ -1782,15 +1901,6 @@ function renderDailyForm(container, ex, day) {
                oninput="updateSliderVal(this.value)">
         <span class="slider-endpoint">10</span>
       </div>
-    </div>
-
-    <div class="reflection-wrap">
-      <label class="reflection-label">
-        One-sentence reflection
-        <span class="reflection-optional">(optional)</span>
-      </label>
-      <textarea class="daily-reflection" id="daily-reflection-input"
-        placeholder="What came to mind as you considered this question?"></textarea>
     </div>
 
     <button class="btn-submit" id="btn-daily-submit" onclick="submitDaily()">
@@ -1817,12 +1927,17 @@ function renderWeekReview(container, ex) {
   }
 
   container.innerHTML = `
-    <div class="daily-day-label">Day 7 · Weekly Review</div>
-    <div class="daily-exercise-name">${escHtml(ex.name || 'The Weekly Review')}</div>
-
     ${scoresHtml}
 
     <div class="daily-question">${escHtml(ex.question || '')}</div>
+
+    <div class="reflection-wrap">
+      <label class="reflection-label">Your response</label>
+      <textarea class="daily-reflection" id="daily-reflection-input"
+        placeholder="What is the most permanent change this revelation has made in your heart?"></textarea>
+    </div>
+
+    <hr class="spirit-divider">
 
     <div class="slider-wrap">
       <div class="slider-header">
@@ -1835,15 +1950,6 @@ function renderWeekReview(container, ex) {
                oninput="updateSliderVal(this.value)">
         <span class="slider-endpoint">10</span>
       </div>
-    </div>
-
-    <div class="reflection-wrap">
-      <label class="reflection-label">
-        Your weekly reflection
-        <span class="reflection-optional">(optional)</span>
-      </label>
-      <textarea class="daily-reflection" id="daily-reflection-input"
-        placeholder="What is the most permanent change this revelation has made in your heart?"></textarea>
     </div>
 
     <button class="btn-submit" id="btn-daily-submit" onclick="submitReview()">
@@ -2072,6 +2178,17 @@ function backToMain() {
   currentDay   = null;
   renderMain();
   showScreen('main');
+}
+
+// ── PRIVACY MODAL ────────────────────────────────────────────────────────────
+function openPrivacyModal() {
+  document.getElementById('privacy-modal').classList.add('open');
+}
+function closePrivacyModal(e) {
+  // Close if clicking the overlay itself or the close button
+  if (!e || e.target === document.getElementById('privacy-modal')) {
+    document.getElementById('privacy-modal').classList.remove('open');
+  }
 }
 
 // ── UTIL ─────────────────────────────────────────────────────────────────────
