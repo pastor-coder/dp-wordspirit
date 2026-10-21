@@ -1637,7 +1637,14 @@ function renderSpiritDailyLog() {
   const section = document.getElementById('spirit-daily-section');
   if (!section) return;
 
-  if (spiritLogs && spiritLogs.today_logged) {
+  const allLogs = spiritLogs?.logs || [];
+  // Today's log belongs to this week only if its week field matches
+  const todayLoggedThisWeek = spiritLogs?.today_logged &&
+    (spiritLogs.today_log?.week === selectedWeek ||
+     spiritLogs.today_log?.week == null); // fallback: old logs without week field
+
+  if (todayLoggedThisWeek) {
+    // Current week, already logged today — show today's entry
     const log = spiritLogs.today_log;
     const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
     section.innerHTML = `
@@ -1648,7 +1655,34 @@ function renderSpiritDailyLog() {
         <button class="spirit-edit-btn" onclick="renderSpiritTagForm()">Edit</button>
       </div>`;
   } else {
-    renderSpiritTagForm();
+    // Not logged today for this week — show past logs for this week if any,
+    // or the tag form if this is the current week, or an empty state otherwise.
+    const weekLogs = allLogs.filter(l => l.week === selectedWeek);
+    if (weekLogs.length > 0) {
+      // Show this week's historical logs (read-only)
+      const logsHtml = weekLogs.map(log => {
+        const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
+        const d = log.log_date
+          ? new Date(log.log_date + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+          : '';
+        return `<div class="spirit-today-card logged">
+          <div class="spirit-today-label">${d}</div>
+          <div class="spirit-today-tag">${tag ? tag.emoji + ' ' + tag.label : log.tag}</div>
+          ${log.note ? `<div class="spirit-today-note">${escHtml(log.note)}</div>` : ''}
+        </div>`;
+      }).join('');
+      section.innerHTML = logsHtml;
+    } else if (selectedWeek === progress.current_week && !spiritLogs?.today_logged) {
+      // Current week, nothing logged today — show the tag form
+      renderSpiritTagForm();
+    } else {
+      // Past week with no logs
+      section.innerHTML = `<div class="spirit-daily-card">
+        <div class="spirit-daily-header" style="color:var(--muted);font-size:0.85rem;">
+          No moments logged for Week ${selectedWeek}
+        </div>
+      </div>`;
+    }
   }
 }
 
