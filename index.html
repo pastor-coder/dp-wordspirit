@@ -1644,7 +1644,7 @@ function renderSpiritDailyLog() {
   const todayLoggedThisWeek = spiritLogs?.today_logged && (todayLogWeek === selectedWeek);
 
   if (todayLoggedThisWeek) {
-    // Current week, already logged today — show today's entry
+    // Logged today for this week — show the entry with Edit
     const log = spiritLogs.today_log;
     const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
     section.innerHTML = `
@@ -1654,13 +1654,13 @@ function renderSpiritDailyLog() {
         ${log.note ? `<div class="spirit-today-note">${escHtml(log.note)}</div>` : ''}
         <button class="spirit-edit-btn" onclick="renderSpiritTagForm()">Edit</button>
       </div>`;
+  } else if (!spiritLogs?.today_logged) {
+    // Not logged today at all — show the tag form for whichever week is selected
+    renderSpiritTagForm();
   } else {
-    // Not logged today for this week — show past logs for this week if any,
-    // or the tag form if this is the current week, or an empty state otherwise.
-    // Null-week logs are treated as belonging to current_week (logged before week tracking)
+    // Already logged today but for a different week — show this week's past logs or empty state
     const weekLogs = allLogs.filter(l => (l.week ?? progress.current_week) === selectedWeek);
     if (weekLogs.length > 0) {
-      // Show this week's historical logs (read-only, exclude today's already-shown log)
       const logsHtml = weekLogs.map(log => {
         const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
         const d = log.log_date
@@ -1673,11 +1673,7 @@ function renderSpiritDailyLog() {
         </div>`;
       }).join('');
       section.innerHTML = logsHtml;
-    } else if (selectedWeek === progress.current_week && !spiritLogs?.today_logged) {
-      // Current week, nothing logged today — show the tag form
-      renderSpiritTagForm();
     } else {
-      // Past week with no logs
       section.innerHTML = `<div class="spirit-daily-card">
         <div class="spirit-daily-header" style="color:var(--muted);font-size:0.85rem;">
           No moments logged for Week ${selectedWeek}
