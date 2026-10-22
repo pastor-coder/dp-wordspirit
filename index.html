@@ -1660,7 +1660,10 @@ function renderSpiritDailyLog() {
     renderSpiritTagForm();
 
   } else {
-    // Today is logged for a different week — show this week's past logs (read-only)
+    // Today is logged for a different week.
+    // If this week has past logs, show them (read-only).
+    // If this week has no logs at all, show the form so the user can log here
+    // (the API upserts by date, so submitting updates today's log to this week).
     const weekLogs = allLogs.filter(l => l.week === selectedWeek);
     if (weekLogs.length > 0) {
       section.innerHTML = weekLogs.map(log => {
@@ -1675,11 +1678,8 @@ function renderSpiritDailyLog() {
         </div>`;
       }).join('');
     } else {
-      section.innerHTML = `<div class="spirit-daily-card">
-        <div class="spirit-daily-header" style="color:var(--muted);font-size:0.85rem;">
-          No moments logged for Week ${selectedWeek}
-        </div>
-      </div>`;
+      // No history for this week — show the form
+      renderSpiritTagForm();
     }
   }
 }
