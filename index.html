@@ -1638,10 +1638,10 @@ function renderSpiritDailyLog() {
   if (!section) return;
 
   const allLogs = spiritLogs?.logs || [];
-  // Today's log belongs to this week only if its week field matches
-  const todayLoggedThisWeek = spiritLogs?.today_logged &&
-    (spiritLogs.today_log?.week === selectedWeek ||
-     spiritLogs.today_log?.week == null); // fallback: old logs without week field
+  // Today's log belongs to this week only if its week field matches selectedWeek.
+  // If week is null (logged before week tracking), treat it as belonging to current_week only.
+  const todayLogWeek = spiritLogs?.today_log?.week ?? progress.current_week;
+  const todayLoggedThisWeek = spiritLogs?.today_logged && (todayLogWeek === selectedWeek);
 
   if (todayLoggedThisWeek) {
     // Current week, already logged today — show today's entry
@@ -1657,9 +1657,10 @@ function renderSpiritDailyLog() {
   } else {
     // Not logged today for this week — show past logs for this week if any,
     // or the tag form if this is the current week, or an empty state otherwise.
-    const weekLogs = allLogs.filter(l => l.week === selectedWeek);
+    // Null-week logs are treated as belonging to current_week (logged before week tracking)
+    const weekLogs = allLogs.filter(l => (l.week ?? progress.current_week) === selectedWeek);
     if (weekLogs.length > 0) {
-      // Show this week's historical logs (read-only)
+      // Show this week's historical logs (read-only, exclude today's already-shown log)
       const logsHtml = weekLogs.map(log => {
         const tag = SPIRIT_TAGS.find(t => t.id === log.tag);
         const d = log.log_date
